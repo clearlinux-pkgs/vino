@@ -4,16 +4,18 @@
 #
 Name     : vino
 Version  : 3.22.0
-Release  : 2
+Release  : 3
 URL      : https://download.gnome.org/sources/vino/3.22/vino-3.22.0.tar.xz
 Source0  : https://download.gnome.org/sources/vino/3.22/vino-3.22.0.tar.xz
-Summary  : No detailed summary available
+Summary  : A VNC server for the GNOME desktop
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
-Requires: vino-config
-Requires: vino-bin
-Requires: vino-data
-Requires: vino-locales
+Requires: vino-data = %{version}-%{release}
+Requires: vino-libexec = %{version}-%{release}
+Requires: vino-license = %{version}-%{release}
+Requires: vino-locales = %{version}-%{release}
+Requires: vino-services = %{version}-%{release}
+BuildRequires : buildreq-gnome
 BuildRequires : gettext
 BuildRequires : intltool
 BuildRequires : libgcrypt-dev
@@ -36,30 +38,29 @@ Vino
 This package is free software and is part of the GNOME project.
 The package contains an integrated VNC server for GNOME.
 
-%package bin
-Summary: bin components for the vino package.
-Group: Binaries
-Requires: vino-data
-Requires: vino-config
-
-%description bin
-bin components for the vino package.
-
-
-%package config
-Summary: config components for the vino package.
-Group: Default
-
-%description config
-config components for the vino package.
-
-
 %package data
 Summary: data components for the vino package.
 Group: Data
 
 %description data
 data components for the vino package.
+
+
+%package libexec
+Summary: libexec components for the vino package.
+Group: Default
+Requires: vino-license = %{version}-%{release}
+
+%description libexec
+libexec components for the vino package.
+
+
+%package license
+Summary: license components for the vino package.
+Group: Default
+
+%description license
+license components for the vino package.
 
 
 %package locales
@@ -70,6 +71,14 @@ Group: Default
 locales components for the vino package.
 
 
+%package services
+Summary: services components for the vino package.
+Group: Systemd services
+
+%description services
+services components for the vino package.
+
+
 %prep
 %setup -q -n vino-3.22.0
 
@@ -78,7 +87,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1519074388
+export SOURCE_DATE_EPOCH=1557026033
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -90,21 +106,16 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1519074388
+export SOURCE_DATE_EPOCH=1557026033
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/vino
+cp COPYING %{buildroot}/usr/share/package-licenses/vino/COPYING
+cp server/miniupnp/LICENCE %{buildroot}/usr/share/package-licenses/vino/server_miniupnp_LICENCE
 %make_install
 %find_lang vino
 
 %files
 %defattr(-,root,root,-)
-
-%files bin
-%defattr(-,root,root,-)
-/usr/libexec/vino-server
-
-%files config
-%defattr(-,root,root,-)
-/usr/lib/systemd/user/vino-server.service
 
 %files data
 %defattr(-,root,root,-)
@@ -112,6 +123,19 @@ rm -rf %{buildroot}
 /usr/share/dbus-1/services/org.freedesktop.Telepathy.Client.Vino.service
 /usr/share/glib-2.0/schemas/org.gnome.Vino.enums.xml
 /usr/share/glib-2.0/schemas/org.gnome.Vino.gschema.xml
+
+%files libexec
+%defattr(-,root,root,-)
+/usr/libexec/vino-server
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/vino/COPYING
+/usr/share/package-licenses/vino/server_miniupnp_LICENCE
+
+%files services
+%defattr(-,root,root,-)
+/usr/lib/systemd/user/vino-server.service
 
 %files locales -f vino.lang
 %defattr(-,root,root,-)
