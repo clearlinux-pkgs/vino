@@ -4,7 +4,7 @@
 #
 Name     : vino
 Version  : 3.22.0
-Release  : 3
+Release  : 4
 URL      : https://download.gnome.org/sources/vino/3.22/vino-3.22.0.tar.xz
 Source0  : https://download.gnome.org/sources/vino/3.22/vino-3.22.0.tar.xz
 Summary  : A VNC server for the GNOME desktop
