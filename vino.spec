@@ -4,7 +4,7 @@
 #
 Name     : vino
 Version  : 3.22.0
-Release  : 5
+Release  : 6
 URL      : https://download.gnome.org/sources/vino/3.22/vino-3.22.0.tar.xz
 Source0  : https://download.gnome.org/sources/vino/3.22/vino-3.22.0.tar.xz
 Summary  : No detailed summary available
